@@ -1,11 +1,9 @@
-// src/components/MainTest.js
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, serverTimestamp } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { Button, Input, notification, Grid } from 'antd';
 import {
-  PlusOutlined,
   BarChartOutlined,
   ShareAltOutlined,
   BulbOutlined,
@@ -13,7 +11,6 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 import { ThemeContext } from '../ThemeContext';
-import { hover } from '@testing-library/user-event/dist/hover';
 
 const { useBreakpoint } = Grid;
 
@@ -128,7 +125,7 @@ function randomInRange(min, max) {
 
 // Emojis to spawn
 const floatingEmojis = [
-  '🎉','🔥','🌈','🤩','🎈','👑','🍀','✨','🦄','🍕','🍻','🎂','🌟','🤟','💃','🕺'
+  '🎉', '🔥', '🌈', '🤩', '🎈', '👑', '🍀', '✨', '🦄', '🍕', '🍻', '🎂', '🌟', '🤟', '💃', '🕺'
 ];
 
 function MainTest() {
@@ -214,7 +211,7 @@ function MainTest() {
   };
 
   // Navigation handlers.
-  const handleCreateTest = () => navigate('/create');
+  // Removed handleCreateTest since it's not used.
   const handleViewStats = () => navigate('/results');
   const handleShare = async () => {
     try {
@@ -293,7 +290,7 @@ function MainTest() {
   const dockOverlayStyle = {
     position: 'fixed',
     top: '20px',
-      left: '50%',
+    left: '50%',
     transform: 'translateX(-50%)',
     backgroundColor: theme === 'light' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
     padding: '10px 30px',
@@ -337,8 +334,6 @@ function MainTest() {
     zIndex: 999,
     borderRadius: '8px',
     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-    fontSize: '1.3rem',
-
     width: '45px',
     height: '45px',
     fontSize: '1.4rem',

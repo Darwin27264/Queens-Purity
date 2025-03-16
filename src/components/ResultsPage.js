@@ -181,8 +181,7 @@ function ResultsPage() {
     padding: '0.5rem',
   };
 
-  // Bar chart block should span 2 columns. No forced width so it will be
-  // exactly double the width of a normal block (2 columns).
+  // Bar chart block should span 2 columns.
   const barBlockStyle = {
     ...squareBlockStyle,
     gridColumn: 'span 2',
