@@ -6,6 +6,7 @@ import ResultsPage from './components/ResultsPage';
 import CreateTest from './components/CreateTest';
 import CustomTest from './components/CustomTest';
 import CustomResults from './components/CustomResults';
+import Feedback from './components/Feedback';  // New Feedback page import
 import { ThemeProvider } from './ThemeContext';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/create" element={<CreateTest />} />
           <Route path="/custom/:testId" element={<CustomTest />} />
           <Route path="/custom/:testId/results" element={<CustomResults />} />
+          <Route path="/feedback" element={<Feedback />} />  {/* New route */}
         </Routes>
       </Router>
     </ThemeProvider>

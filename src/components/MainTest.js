@@ -6,9 +6,11 @@ import { Button, Input, notification, Grid, Popconfirm } from 'antd';
 import {
   BarChartOutlined,
   ShareAltOutlined,
-  BulbOutlined,
   MenuOutlined,
   CloseOutlined,
+  MailOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from '@ant-design/icons';
 import { ThemeContext } from '../ThemeContext';
 
@@ -295,7 +297,35 @@ function MainTest() {
     cursor: 'pointer',
     transition: 'color 0.3s ease, border-color 0.3s ease',
     borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   };
+
+  // Define mobileMenuButtonStyle BEFORE using it
+  const mobileMenuButtonStyle = {
+    width: '200px',
+    height: '50px',
+    fontSize: '1.2rem',
+    fontFamily: 'Georgia, serif',
+    margin: '10px 0',
+    borderRadius: '8px',
+  };
+
+  // Now define dark mode toggle buttons:
+  const darkModeButtonDesktop = (
+    <Button
+      icon={theme === 'light' ? <MoonOutlined /> : <SunOutlined />}
+      style={dockButtonStyle}
+      onClick={toggleTheme}
+    />
+  );
+
+  const darkModeButtonMobile = (
+    <Button
+      icon={theme === 'light' ? <MoonOutlined /> : <SunOutlined />}
+      style={{ ...mobileMenuButtonStyle }}
+      onClick={() => { closeMobileMenu(); toggleTheme(); }}
+    />
+  );
 
   const mobileButtonStyle = {
     position: 'fixed',
@@ -339,15 +369,6 @@ function MainTest() {
     opacity: mobileMenuOpen ? 1 : 0,
     pointerEvents: mobileMenuOpen ? 'auto' : 'none',
     transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
-  };
-
-  const mobileMenuButtonStyle = {
-    width: '200px',
-    height: '50px',
-    fontSize: '1.2rem',
-    fontFamily: 'Georgia, serif',
-    margin: '10px 0',
-    borderRadius: '8px',
   };
 
   const mobileExitButtonStyle = {
@@ -470,30 +491,31 @@ function MainTest() {
         <button onClick={closeMobileMenu} style={mobileExitButtonStyle}>
           <CloseOutlined />
         </button>
-        {/* <Button icon={<PlusOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleCreateTest(); }}>Create</Button> */}
         <Button icon={<BarChartOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleViewStats(); }}>
           Stats
         </Button>
         <Button icon={<ShareAltOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleShare(); }}>
           Share
         </Button>
-        <Button icon={<BulbOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); toggleTheme(); }}>
-          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+        <Button icon={<MailOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); navigate('/feedback'); }}>
+          Feedback
         </Button>
+        {darkModeButtonMobile}
       </div>
 
       {/* Desktop Fixed Menu Bar */}
       <div style={dockOverlayStyle}>
-        {/* <Button icon={<PlusOutlined />} style={dockButtonStyle} onClick={handleCreateTest}>Create</Button> */}
         <Button icon={<BarChartOutlined />} style={dockButtonStyle} onClick={handleViewStats}>
           Stats
         </Button>
         <Button icon={<ShareAltOutlined />} style={dockButtonStyle} onClick={handleShare}>
           Share
         </Button>
-        <Button icon={<BulbOutlined />} style={dockButtonStyle} onClick={toggleTheme}>
-          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+        <Button icon={<MailOutlined />} style={dockButtonStyle} onClick={() => navigate('/feedback')}>
+          Feedback
         </Button>
+        {/* Dark mode toggle placed at the very right */}
+        {darkModeButtonDesktop}
       </div>
 
       {/* Main Content */}
