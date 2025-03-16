@@ -13,6 +13,7 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 import { ThemeContext } from '../ThemeContext';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 const { useBreakpoint } = Grid;
 
@@ -249,7 +250,7 @@ function MainTest() {
     color: theme === 'light' ? '#000' : '#fff',
     transition: 'color 0.3s ease, background 0.3s ease',
     position: 'relative',
-    marginTop: screens.xs ? -90 : 5,
+    marginTop: screens.xs ? -90 : -10,
     fontSize: '1.1rem',
   };
 
@@ -292,7 +293,7 @@ function MainTest() {
   const dockOverlayStyle = {
     position: 'fixed',
     top: '20px',
-    left: '50%',
+      left: '50%',
     transform: 'translateX(-50%)',
     backgroundColor: theme === 'light' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
     padding: '10px 30px',
@@ -306,9 +307,11 @@ function MainTest() {
 
   const dockButtonStyle = {
     backgroundColor: 'transparent',
-    border: '1px solid',
+    border: '1px',
     color: theme === 'light' ? '#000' : '#fff',
-    fontWeight: 'bold',
+    fontWeight: '100',
+    fontSize: '1.1rem',
+    fontFamily: 'Georgia, serif',
     borderColor: theme === 'light' ? '#000' : '#fff',
     padding: '4px 8px',
     cursor: 'pointer',
@@ -318,9 +321,9 @@ function MainTest() {
 
   // Updated mobile menu button style (removed black border; added drop shadow)
   const mobileButtonStyle = {
-    position: 'absolute',
-    top: '10px',
-    right: '20px',
+    position: 'fixed',
+    top: '15px',
+    right: '35px',
     display: screens.xs ? 'block' : 'none',
     backgroundColor:
       theme === 'light'
@@ -335,6 +338,10 @@ function MainTest() {
     borderRadius: '8px',
     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
     fontSize: '1.3rem',
+
+    width: '45px',
+    height: '45px',
+    fontSize: '1.4rem',
   };
 
   const mobileMenuOverlayStyle = {
@@ -362,18 +369,19 @@ function MainTest() {
   const mobileMenuButtonStyle = {
     width: '200px',
     height: '50px',
-    fontSize: '1rem',
+    fontSize: '1.2rem',
+    fontFamily: 'Georgia, serif',
     margin: '10px 0',
     borderRadius: '8px',
   };
 
   const mobileExitButtonStyle = {
     position: 'absolute',
-    top: '20px',
-    right: '20px',
+    top: '25px',
+    right: '35px',
     backgroundColor: 'transparent',
     border: 'none',
-    fontSize: '1.5rem',
+    fontSize: '1.6rem',
     color: theme === 'light' ? '#000' : '#fff',
     cursor: 'pointer',
   };
@@ -487,13 +495,13 @@ function MainTest() {
         <button onClick={closeMobileMenu} style={mobileExitButtonStyle}>
           <CloseOutlined />
         </button>
-        <Button
+        {/* <Button
           icon={<PlusOutlined />}
           style={{ ...mobileMenuButtonStyle }}
           onClick={() => { closeMobileMenu(); handleCreateTest(); }}
         >
           Create
-        </Button>
+        </Button> */}
         <Button
           icon={<BarChartOutlined />}
           style={{ ...mobileMenuButtonStyle }}
@@ -540,7 +548,7 @@ function MainTest() {
           <img
             src="/images/logo.png"
             alt="Queen’s Purity Test Logo"
-            style={{ maxWidth: '120%', height: 'auto' }}
+            style={{ maxWidth: '130%', height: 'auto' }}
           />
         </div>
 

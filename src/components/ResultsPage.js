@@ -146,6 +146,7 @@ function ResultsPage() {
     alignItems: 'flex-start',
     padding: '2rem 0.5rem',
     boxSizing: 'border-box',
+    fontFamily: 'Georgia, serif',
   };
 
   // Main content area
@@ -154,6 +155,7 @@ function ResultsPage() {
     maxWidth: isMobile ? '400px' : '800px',
     position: 'relative',
     padding: '0 1rem',
+    fontFamily: 'Georgia, serif',
   };
 
   // 2 columns on mobile, 4 on desktop. Each column is `blockSize` wide.
@@ -161,7 +163,8 @@ function ResultsPage() {
     display: 'grid',
     gridTemplateColumns: `repeat(${isMobile ? 2 : 4}, ${blockSize})`,
     justifyContent: 'center',
-    gap: '1rem',
+    gap: '0.55rem',
+    fontFamily: 'Georgia, serif',
   };
 
   // We remove `width: blockSize` so the item width is controlled by the grid.
@@ -196,15 +199,18 @@ function ResultsPage() {
     marginBottom: '4px',
     color: textColor,
     fontSize: '1rem',
+    fontFamily: 'Georgia, serif',
   };
   const headerTitleStyle = {
-    margin: 0,
+    margin: 10,
     color: textColor,
     fontSize: '1.4rem',
+    fontFamily: 'Georgia, serif',
   };
   const headerTextStyle = {
     color: textColor,
     fontSize: '1rem',
+    fontFamily: 'Georgia, serif',
   };
 
   function StatBlock({ title, value }) {
@@ -271,8 +277,8 @@ function ResultsPage() {
         onClick={() => navigate(-1)}
         style={{
           ...floatingButtonStyle,
-          top: 10,
-          left: 10,
+          top: 20,
+          left: 15,
         }}
       />
       <Button
@@ -280,8 +286,8 @@ function ResultsPage() {
         onClick={handleShare}
         style={{
           ...floatingButtonStyle,
-          top: 10,
-          right: 10,
+          top: 20,
+          right: 15,
         }}
       />
 
@@ -310,7 +316,7 @@ function ResultsPage() {
           {/* 3: Bar Chart (spans 2 columns) */}
           <div style={barBlockStyle}>
             <Title level={5} style={blockTitleStyle}>
-              📈 Score Distribution (Bar Chart)
+              📈 Score Distribution
             </Title>
             <div style={chartContainerStyle}>
               <ResponsiveContainer width="100%" height="100%">
@@ -335,7 +341,7 @@ function ResultsPage() {
           {/* 5: Pie Chart */}
           <div style={squareBlockStyle}>
             <Title level={5} style={blockTitleStyle}>
-              🍰 Score Distribution (Pie Chart)
+              🍰 Score in a Pie
             </Title>
             <div style={chartContainerStyle}>
               <ResponsiveContainer width="100%" height="100%">
