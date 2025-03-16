@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { MailOutlined, LeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -39,7 +39,6 @@ function Feedback() {
     top: '20px',
     left: '15px',
     backgroundColor: theme === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
-    border: `1px solid ${theme === 'light' ? '#000' : '#fff'}`,
     color: theme === 'light' ? '#000' : '#fff',
     fontWeight: '100',
     fontSize: '1.1rem',
