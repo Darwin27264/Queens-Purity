@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, serverTimestamp } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { Button, Input, notification, Grid } from 'antd';
+import { Button, Input, notification, Grid, Popconfirm } from 'antd';
 import {
   BarChartOutlined,
   ShareAltOutlined,
@@ -16,114 +16,114 @@ const { useBreakpoint } = Grid;
 
 // Queen's-themed questions
 const questions = [
-  "Skipped class to explore Kingston’s nightlife?",
-  "Partied till dawn in a Queen’s dorm?",
-  "Stolen a kiss under the historic arches on campus?",
-  "Taken part in a wild Frosh Week escapade?",
-  "Dared to go skinny dipping in a nearby lake?",
-  "Hooked up in a Queen’s study lounge?",
-  "Pulled an all-nighter at the Lister Library?",
-  "Been caught sneaking into a late-night campus party?",
-  "Flirted with someone from a different faculty?",
-  "Joined a secret society (or rumor thereof) on campus?",
-  "Partied with the Engineering crew until dawn?",
-  "Been seduced by an Arts and Science classmate?",
-  "Shared a scandalous kiss with a Smith School of Business student?",
-  "Taken a risky dare from a Health Sciences major?",
-  "Had a forbidden fling with a Law student?",
-  "Dated someone from the Education faculty just for the thrill?",
-  "Gotten lost on campus chasing a late-night thrill?",
-  "Been part of a campus scandal that left you speechless?",
-  "Pulled a prank during a Queen’s Homecoming?",
-  "Had a secret romance that defied campus rules?",
-  "Experimented with your sexuality during Frosh Week?",
-  "Partied so hard you forgot you were a Queen’s Lancer?",
-  "Had a rendezvous in one of Queen’s old, secretive halls?",
-  "Played hook-up games in the Queen’s quad?",
-  "Been busted by a professor for breaking curfew?",
-  "Experienced unrestrained passion in a Queen’s dorm room?",
-  "Embarked on a scandalous late-night rendezvous?",
-  "Shared an intimate secret during a campus blackout?",
-  "Shamelessly flirted at a Queen’s party?",
-  "Sent a risqué text in the middle of a lecture?",
-  "Snuck into a club on campus in outrageous attire?",
-  "Accepted a naughty dare from your housemates?",
-  "Been dared to do something wild at a Queen’s bash?",
-  "Had a spontaneous, dirty encounter on campus grounds?",
-  "Had a secret tryst in the back of a campus bar?",
-  "Confessed a scandalous secret after one too many drinks?",
-  "Joined a racy campus scavenger hunt?",
-  "Taken part in a forbidden hookup tradition at Queen’s?",
-  "Had a passionate night that left you red-faced on campus?",
-  "Broken a rule just to score a quick romance?",
-  "Flirted while waiting in a Queen’s dining hall line?",
-  "Gotten wild during a Queen’s football game night?",
-  "Been swept up in an impromptu campus make-out session?",
-  "Shared a steamy secret with your lab partner?",
-  "Sparked a romance in the arts building?",
-  "Played truth or dare that went way over the top at Queen’s?",
-  "Had a compromising moment in the student union?",
-  "Been caught in a scandalous study group encounter?",
-  "Had a wild escapade in the heart of Kingston?",
-  "Partied with the Smith School of Business crew in a memorable way?",
-  "Flirted with someone from Engineering after class?",
-  "Found yourself in a messy campus love triangle?",
-  "Added a risqué twist to a Queen’s seminar break?",
-  "Stolen a kiss during a campus tradition event?",
-  "Attended a secret underground party in a Queen’s cellar?",
-  "Let a heated debate end in unexpected passion?",
-  "Partied so hard that you forgot your own name?",
-  "Played a dirty game of spin the bottle at Queen’s?",
-  "Exchanged scandalous secrets with a stranger at a campus event?",
-  "Experienced a night that defied Queen’s expectations?",
-  "Dared to push your limits at a Queen’s house party?",
-  "Spiced up a study session with flirtatious banter?",
-  "Been haunted by a scandal from your Queen’s days?",
-  "Flirted outrageously with a guest at a campus event?",
-  "Starred in your own legendary Queen’s love story?",
-  "Been swept away by a spontaneous campus romance?",
-  "Taken a naughty risk to impress someone in class?",
-  "Had a heated encounter in a Queen’s lecture hall?",
-  "Broken the ice with a daring dorm dare?",
-  "Whispered dirty secrets in a quiet campus corner?",
-  "Had a hookup that defied all campus expectations?",
-  "Joined a racy secret society initiation at Queen’s?",
-  "Made out in an unexpected spot on campus?",
-  "Been caught red-handed during a cheeky escapade?",
-  "Had an encounter that became a campus legend?",
-  "Transformed a Queen’s event into a naughty adventure?",
-  "Flirted just to break the ice at Frosh Week?",
-  "Indulged in a secret rendezvous in a hidden nook?",
-  "Experienced an all-nighter that turned wildly unexpected?",
-  "Exchanged flirtatious texts during a boring lecture?",
-  "Played a risky game of truth or dare that got too personal?",
-  "Taken a scandalous selfie that left you blushing the next day?",
-  "Embarked on a midnight adventure that defied Queen’s rules?",
-  "Made a bet that led to a wild, unforgettable night?",
-  "Been part of a racy campus prank that went viral?",
-  "Danced dangerously close to scandal at a Queen’s party?",
-  "Had a secret encounter you still keep hidden?",
-  "Flirted shamelessly in the Queen’s quad?",
-  "Used your Queen’s ID for a wild campus dare?",
-  "Been part of a night that turned into an unexpected escapade?",
-  "Broken free from your comfort zone at a Queen’s bash?",
-  "Played a naughty game that got a little too real?",
-  "Found yourself in a scandalous situation you couldn’t explain?",
-  "Had an encounter that still makes you blush?",
-  "Taken part in a racy Queen’s tradition you’d never admit to?",
-  "Indulged in secretive flirtation during a campus event?",
-  "Felt the thrill of a taboo kiss on Queen’s grounds?",
-  "Taken a daring chance that led to a messy love affair?",
-  "Crossed the line between fun and scandal at Queen’s?",
-  "Written your own scandalous chapter in the Queen’s legacy?"
+  "Completed wizard",
+  "Failed wizard",
+  "Stayed in stauffer for 24 hours during exam season",
+  "Been to tumble tuesday",
+  "HOCOFOCO",
+  "Pulled a fire alarm",
+  "Woken up in res during night due to fire alarm",
+  "Gotten a professional headshot from mitchell / goodes",
+  "Had a startup idea / tried to do business",
+  "Been to a house party",
+  "Been to all clubs",
+  "Been to a networking event",
+  "Gotten linkedin premium",
+  "Sung the “oil thigh” after a sports game",
+  "Worn tricolour face paint",
+  "Played beer bong at a house party",
+  "Gotten your order wrong at lazys or loco",
+  "Went to class drunk",
+  "Went to class high",
+  "Went to class crossed",
+  "Did an exam drunk",
+  "Did an exam high",
+  "Did an exam crossed",
+  "Did an exam that was pretty much identical to ones in the exam bank",
+  "Failed a course",
+  "Failed a course twice",
+  "Had beef with roommate",
+  "Had sex in a residence building in first year",
+  "Had sex in a residence building",
+  "Got walked in on during the deed",
+  "Walked in on someone during their deed",
+  "Done the deed with someone in the room",
+  "Stopped the music at a party because there were cops outside",
+  "Jumped the pier",
+  "Skinny dipped in the pier",
+  "Pissed in the pier",
+  "Walked on the pier when it was frozen",
+  "Had friends from another university come over for a party",
+  "Went to another university for parties (why?)",
+  "Took a seemingly easy elective and did miserably in the course",
+  "Took a gender study course for elective",
+  "Dropped a gender study course",
+  "Been to 5 or fewer lectures for a course",
+  "Gotten 80+ in a course without going to lectures",
+  "Had your name shouted at a party",
+  "Been on the executive team in club(s)",
+  "Ended up in the ER due to alcohol",
+  "Ended up in the COR",
+  "Gotten a line skip",
+  "Have an owala bottle",
+  "Are you a smooth criminal?",
+  "Sneaked alcohol into res",
+  "Swallowed a may fly",
+  "Played spikeball in city park",
+  "Own a faculty jacket",
+  "Own a vegan faculty jacket",
+  "Own a queen’s merch",
+  "Stalked your crush on linkedin",
+  "Been on a date with someone you met on hinge / tinder / whatever dating app",
+  "Been in a relationship with a TA",
+  "Been in a relationship with a prof",
+  "Faculty Hook-up",
+  "Done absolute jack in a group assignment",
+  "Done everything in a group assignment",
+  "Had someone 19+ to buy you drinks / cannabis",
+  "Had a meal in all the dining halls",
+  "Stole from dining halls",
+  "Ended first year with leftover tams",
+  "Wore leggings / skinny jeans + lace top combo at clubs",
+  "Wore a cap + chains combo at clubs",
+  "Asked someone for money (for shots) at a club",
+  "Spent more time at a pre than at the actual club",
+  "Worked out in the ARC",
+  "Tammed a booster juice after an ARC sess",
+  "Faked illness for academic consideration",
+  "Shotgunned a beer",
+  "Shotgunned 3+ beer a night",
+  "Used mobileorder",
+  "Had khao pho now at the arc and hated it",
+  "Got lost on campus",
+  "Threw up in a library / school building",
+  "Submitted something to queensconfessionss",
+  "Done something stupid when drunk",
+  "Relied on chatgpt too much and failed an in person test",
+  "Shittalked the commies",
+  "Shittalked the eng kids",
+  "Gotten into a new relationship within less than a month from ending the previous one",
+  "Hooked up with someone on a sports team",
+  "Hooked up with a commie and was disappointed",
+  "Hooked up with an eng kids and was freaked out",
+  "Have only worn formal clothings for interviews and not events",
+  "Cheated on your significant other",
+  "Got cheated on",
+  "Watched queen’s band perform",
+  "Been to the farmer’s market",
+  "Said you were from Toronto but really from GTA",
+  "Had to spent $100+ on course material",
+  "Have friends from SLC / RMC",
+  "Been to asian glow",
+  "Dated someone not your race",
+  "WARLOCK",
+  "Wuck festern?"
 ];
 
-// Helper for random float in [min, max]
 function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-// Emojis to spawn
 const floatingEmojis = [
   '🎉', '🔥', '🌈', '🤩', '🎈', '👑', '🍀', '✨', '🦄', '🍕', '🍻', '🎂', '🌟', '🤟', '💃', '🕺'
 ];
@@ -133,29 +133,19 @@ function MainTest() {
   const screens = useBreakpoint();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  // Use a solid background color based on theme.
   const containerBackground = theme === 'light' ? '#f0f2f5' : '#121212';
 
-  // Update HTML and body background to match container background.
   useEffect(() => {
     document.documentElement.style.backgroundColor = containerBackground;
     document.body.style.backgroundColor = containerBackground;
   }, [containerBackground]);
 
-  // Answers and age
   const [answers, setAnswers] = useState(Array(questions.length).fill(false));
   const [age, setAge] = useState('');
-
-  // Mobile menu state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // State array of floating emojis
   const [emojiArray, setEmojiArray] = useState([]);
-
-  // Interval ref to clear on unmount
   const spawnIntervalRef = useRef(null);
 
-  // Spawns a single emoji with random data.
   function spawnEmoji() {
     const id = Date.now() + Math.random();
     const emoji = floatingEmojis[Math.floor(Math.random() * floatingEmojis.length)];
@@ -164,12 +154,11 @@ function MainTest() {
     const dx = randomInRange(-100, 100);
     const dy = randomInRange(-100, 100);
     const size = randomInRange(1.5, 3);
-    const duration = randomInRange(5, 10); // seconds
+    const duration = randomInRange(5, 10);
     const newEmoji = { id, emoji, topPos, leftPos, dx, dy, size, duration };
     setEmojiArray((prev) => [...prev, newEmoji]);
   }
 
-  // Remove emoji after animation finishes.
   function removeEmoji(id) {
     setEmojiArray((prev) => prev.filter((item) => item.id !== id));
   }
@@ -185,19 +174,16 @@ function MainTest() {
     return () => clearInterval(spawnIntervalRef.current);
   }, []);
 
-  // Toggle a checkbox.
   const handleToggle = (index) => {
     const newAnswers = [...answers];
     newAnswers[index] = !newAnswers[index];
     setAnswers(newAnswers);
   };
 
-  // Clear all boxes.
   const handleClearAll = () => {
     setAnswers(Array(questions.length).fill(false));
   };
 
-  // Submit form.
   const handleSubmit = async () => {
     const score = answers.filter((answer) => answer).length;
     const ageNumber = parseInt(age, 10);
@@ -210,8 +196,6 @@ function MainTest() {
     navigate('/results');
   };
 
-  // Navigation handlers.
-  // Removed handleCreateTest since it's not used.
   const handleViewStats = () => navigate('/results');
   const handleShare = async () => {
     try {
@@ -228,7 +212,6 @@ function MainTest() {
     }
   };
 
-  // Mobile menu open/close.
   const openMobileMenu = () => setMobileMenuOpen(true);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
@@ -236,7 +219,6 @@ function MainTest() {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
   }, [mobileMenuOpen]);
 
-  // -- STYLES --
   const containerStyle = {
     background: containerBackground,
     minHeight: '100vh',
@@ -286,7 +268,6 @@ function MainTest() {
     marginTop: '20px',
   };
 
-  // Updated dock overlay style (desktop menu bar always visible)
   const dockOverlayStyle = {
     position: 'fixed',
     top: '20px',
@@ -316,7 +297,6 @@ function MainTest() {
     borderRadius: '8px',
   };
 
-  // Updated mobile menu button style (removed black border; added drop shadow)
   const mobileButtonStyle = {
     position: 'fixed',
     top: '15px',
@@ -490,41 +470,21 @@ function MainTest() {
         <button onClick={closeMobileMenu} style={mobileExitButtonStyle}>
           <CloseOutlined />
         </button>
-        {/* <Button
-          icon={<PlusOutlined />}
-          style={{ ...mobileMenuButtonStyle }}
-          onClick={() => { closeMobileMenu(); handleCreateTest(); }}
-        >
-          Create
-        </Button> */}
-        <Button
-          icon={<BarChartOutlined />}
-          style={{ ...mobileMenuButtonStyle }}
-          onClick={() => { closeMobileMenu(); handleViewStats(); }}
-        >
+        {/* <Button icon={<PlusOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleCreateTest(); }}>Create</Button> */}
+        <Button icon={<BarChartOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleViewStats(); }}>
           Stats
         </Button>
-        <Button
-          icon={<ShareAltOutlined />}
-          style={{ ...mobileMenuButtonStyle }}
-          onClick={() => { closeMobileMenu(); handleShare(); }}
-        >
+        <Button icon={<ShareAltOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); handleShare(); }}>
           Share
         </Button>
-        <Button
-          icon={<BulbOutlined />}
-          style={{ ...mobileMenuButtonStyle }}
-          onClick={() => { closeMobileMenu(); toggleTheme(); }}
-        >
+        <Button icon={<BulbOutlined />} style={{ ...mobileMenuButtonStyle }} onClick={() => { closeMobileMenu(); toggleTheme(); }}>
           {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
         </Button>
       </div>
 
       {/* Desktop Fixed Menu Bar */}
       <div style={dockOverlayStyle}>
-        {/* <Button icon={<PlusOutlined />} style={dockButtonStyle} onClick={handleCreateTest}>
-          Create
-        </Button> */}
+        {/* <Button icon={<PlusOutlined />} style={dockButtonStyle} onClick={handleCreateTest}>Create</Button> */}
         <Button icon={<BarChartOutlined />} style={dockButtonStyle} onClick={handleViewStats}>
           Stats
         </Button>
@@ -548,11 +508,11 @@ function MainTest() {
         </div>
 
         <p style={paragraphStyle}>
-          Welcome to the unofficial Queen’s Purity Test—a playful twist on the classic Rice Purity Test, tailored for Queen’s University students. This is not affiliated with Queen’s, but it’s a fun way to reflect on your campus experiences and traditions.
+          The Queen's Purity Test has historically served as a way for students to bond and track their experiences throughout their time at the Queen's University. It's a voluntary opportunity for students to reflect on their unique university journey.
         </p>
 
         <p style={cautionStyle}>
-          Caution: This is not a bucket list. Attempting to do everything on this list in a single semester may lead to exhaustion, or worse!
+          Caution: This is not a bucket list. Completion of all items will not result in anything good.
         </p>
 
         <p style={paragraphStyle}>
@@ -576,13 +536,12 @@ function MainTest() {
           {questions.map((question, index) => (
             <li key={index} style={listItemStyle}>
               <label style={{ cursor: 'pointer' }}>
-                <input
+                {index + 1}. <input
                   type="checkbox"
                   checked={answers[index]}
                   onChange={() => handleToggle(index)}
                   style={{ marginRight: '10px', cursor: 'pointer' }}
-                />
-                {question}
+                /> {question}
               </label>
             </li>
           ))}
@@ -593,9 +552,16 @@ function MainTest() {
           <button style={finishButtonStyle} onClick={handleSubmit}>
             Finish Test
           </button>
-          <button style={clearButtonStyle} onClick={handleClearAll}>
-            Clear All Boxes
-          </button>
+          <Popconfirm
+            title="Are you sure you want to clear all boxes?"
+            onConfirm={handleClearAll}
+            okText="Yes"
+            cancelText="No"
+          >
+            <button style={clearButtonStyle}>
+              Clear All Boxes
+            </button>
+          </Popconfirm>
         </div>
       </div>
     </div>
