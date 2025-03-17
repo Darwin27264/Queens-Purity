@@ -104,18 +104,17 @@ function Feedback() {
         onClick={() => navigate(-1)} 
         style={floatingBackButtonStyle}
       />
-      <h1 style={{ fontFamily: 'Times New Roman, serif' }}>Feedback</h1>
+      <h1 style={{ fontFamily: 'Times New Roman, serif' }}>📝 Feedback</h1>
       <p style={{ fontFamily: 'Times New Roman, serif' }}>
         If you have any improvement ideas or feedback, please let us know by submitting your feedback below.
       </p>
       <Form form={form} layout="vertical" style={{ fontFamily: 'Times New Roman, serif' }}>
         <Form.Item
-          label="Your Feedback"
           name="feedback"
           rules={[{ required: true, message: 'Please enter your feedback' }]}
           style={{ fontFamily: 'Times New Roman, serif' }}
         >
-          <Input.TextArea rows={6} placeholder="Enter your feedback here..." />
+          <Input.TextArea rows={6} placeholder="Feedback here..." />
         </Form.Item>
         <Form.Item>
           <Button 
@@ -124,15 +123,15 @@ function Feedback() {
             onClick={handleSubmit}
             style={buttonStyle}
           >
-            Send Feedback
+            Send
           </Button>
         </Form.Item>
       </Form>
       {showPopup && (
         <div style={popupOverlayStyle}>
           <div style={popupContentStyle}>
-            <h2>Feedback Received</h2>
-            <p>Thank you for your feedback!</p>
+            <h2>Received!</h2>
+            <p>Thanks for your feedback!😎</p>
             <Button onClick={() => setShowPopup(false)} style={buttonStyle}>
               Close
             </Button>

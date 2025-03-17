@@ -16,109 +16,108 @@ import { ThemeContext } from '../ThemeContext';
 
 const { useBreakpoint } = Grid;
 
-// Queen's-themed questions
 const questions = [
-    "Completed wizard",
-    "Failed wizard",
-    "Stayed in stauffer for 24 hours during exam season",
-    "Been to tumble tuesday",
-    "HOCOFOCO",
-    "Pulled a fire alarm",
-    "Woken up in res during night due to fire alarm",
-    "Gotten a professional headshot from mitchell / goodes",
-    "Had a startup idea / tried to do business",
-    "Been to a house party",
-    "Been to all clubs",
-    "Been to a networking event",
-    "Gotten linkedin premium",
-    "Sung the “oil thigh” after a sports game",
-    "Worn tricolour face paint",
-    "Played beer bong at a house party",
-    "Gotten your order wrong at lazys or loco",
-    "Went to class drunk",
-    "Went to class high",
-    "Went to class crossed",
-    "Did an exam drunk",
-    "Did an exam high",
-    "Did an exam crossed",
-    "Did an exam that was pretty much identical to ones in the exam bank",
-    "Failed a course",
-    "Failed a course twice",
-    "Had beef with roommate",
-    "Had sex in a residence building in first year",
-    "Had sex in a residence building",
-    "Got walked in on during the deed",
-    "Walked in on someone during their deed",
-    "Done the deed with someone in the room",
-    "Stopped the music at a party because there were cops outside",
-    "Jumped the pier",
-    "Skinny dipped in the pier",
-    "Pissed in the pier",
-    "Walked on the pier when it was frozen",
-    "Had friends from another university come over for a party",
-    "Went to another university for parties (why?)",
-    "Took a seemingly easy elective and did miserably in the course",
-    "Took a gender study course for elective",
-    "Dropped a gender study course",
-    "Been to 5 or fewer lectures for a course",
-    "Gotten 80+ in a course without going to lectures",
-    "Had your name shouted at a party",
-    "Been on the executive team in club(s)",
-    "Ended up in the ER due to alcohol",
-    "Ended up in the COR",
-    "Gotten a line skip",
-    "Have an owala bottle",
-    "Are you a smooth criminal?",
-    "Sneaked alcohol into res",
-    "Swallowed a may fly",
-    "Played spikeball in city park",
-    "Own a faculty jacket",
-    "Own a vegan faculty jacket",
-    "Own a queen’s merch",
-    "Stalked your crush on linkedin",
-    "Been on a date with someone you met on hinge / tinder / whatever dating app",
-    "Been in a relationship with a TA",
-    "Been in a relationship with a prof",
-    "Faculty Hook-up",
-    "Done absolute jack in a group assignment",
-    "Done everything in a group assignment",
-    "Had someone 19+ to buy you drinks / cannabis",
-    "Had a meal in all the dining halls",
-    "Stole from dining halls",
-    "Ended first year with leftover tams",
-    "Wore leggings / skinny jeans + lace top combo at clubs",
-    "Wore a cap + chains combo at clubs",
-    "Asked someone for money (for shots) at a club",
-    "Spent more time at a pre than at the actual club",
-    "Worked out in the ARC",
-    "Tammed a booster juice after an ARC sess",
-    "Faked illness for academic consideration",
-    "Shotgunned a beer",
-    "Shotgunned 3+ beer a night",
-    "Used mobileorder",
-    "Got lost on campus",
-    "Threw up in a library / school building",
-    "Submitted something to queensconfessionss",
-    "Done something stupid when drunk",
-    "Relied on chatgpt too much and failed an in person test",
-    "Shittalked the commies",
-    "Shittalked the eng kids",
-    "Gotten into a new relationship < 30 days from ending the previous one",
-    "Hooked up with someone on a sports team",
-    "Hooked up with a commie and was disappointed",
-    "Hooked up with an eng kids and was freaked out",
-    "Have only worn formal clothings for interviews and not events",
-    "Cheated on your significant other",
-    "Got cheated on",
-    "Watched queen’s band perform",
-    "Been to the farmer’s market",
-    "Said you were from Toronto but really from GTA",
-    "Had to spent $100+ on course material",
-    "Have friends from SLC / RMC",
-    "Dated someone not your race",
-    "WARLOCK",
-    "Wuck festern?"
-  ]  
+  "Completed wizard",
+  "Failed wizard",
+  "Stayed in stauffer for 24 hours during exam season",
+  "Been to tumble tuesday",
+  "HOCOFOCO",
+  "Pulled a fire alarm",
+  "Woken up in res during night due to fire alarm",
+  "Gotten a professional headshot from mitchell / goodes",
+  "Had a startup idea / tried to do business",
+  "Been to a house party",
+  "Been to all clubs",
+  "Been to a networking event",
+  "Gotten linkedin premium",
+  "Sung the “oil thigh” after a sports game",
+  "Worn tricolour face paint",
+  "Played beer bong at a house party",
+  "Gotten your order wrong at lazys or loco",
+  "Went to class drunk",
+  "Went to class high",
+  "Went to class crossed",
+  "Did an exam drunk",
+  "Did an exam high",
+  "Did an exam crossed",
+  "Did an exam that was pretty much identical to ones in the exam bank",
+  "Failed a course",
+  "Failed a course twice",
+  "Had beef with roommate",
+  "Had sex in a residence building in first year",
+  "Had sex in a residence building",
+  "Got walked in on during the deed",
+  "Walked in on someone during their deed",
+  "Done the deed with someone in the room",
+  "Stopped the music at a party because there were cops outside",
+  "Jumped the pier",
+  "Skinny dipped in the pier",
+  "Pissed in the pier",
+  "Walked on the pier when it was frozen",
+  "Had friends from another university come over for a party",
+  "Went to another university for parties (why?)",
+  "Took a seemingly easy elective and did miserably in the course",
+  "Took a gender study course for elective",
+  "Dropped a gender study course",
+  "Been to 5 or fewer lectures for a course",
+  "Gotten 80+ in a course without going to lectures",
+  "Had your name shouted at a party",
+  "Been on the executive team in club(s)",
+  "Ended up in the ER due to alcohol",
+  "Ended up in the COR",
+  "Gotten a line skip",
+  "Have an owala bottle",
+  "Are you a smooth criminal?",
+  "Sneaked alcohol into res",
+  "Swallowed a may fly",
+  "Played spikeball in city park",
+  "Own a faculty jacket",
+  "Own a vegan faculty jacket",
+  "Own a queen’s merch",
+  "Stalked your crush on linkedin",
+  "Been on a date with someone you met on hinge / tinder / whatever dating app",
+  "Been in a relationship with a TA",
+  "Been in a relationship with a prof",
+  "Faculty Hook-up",
+  "Done absolute jack in a group assignment",
+  "Done everything in a group assignment",
+  "Had someone 19+ to buy you drinks / cannabis",
+  "Had a meal in all the dining halls",
+  "Stole from dining halls",
+  "Ended first year with leftover tams",
+  "Wore leggings / skinny jeans + lace top combo at clubs",
+  "Wore a cap + chains combo at clubs",
+  "Asked someone for money (for shots) at a club",
+  "Spent more time at a pre than at the actual club",
+  "Worked out in the ARC",
+  "Tammed a booster juice after an ARC sess",
+  "Faked illness for academic consideration",
+  "Shotgunned a beer",
+  "Shotgunned 3+ beer a night",
+  "Used mobileorder",
+  "Got lost on campus",
+  "Threw up in a library / school building",
+  "Submitted something to queensconfessionss",
+  "Done something stupid when drunk",
+  "Relied on chatgpt too much and failed an in person test",
+  "Shittalked the commies",
+  "Shittalked the eng kids",
+  "Gotten into a new relationship < 30 days from ending the previous one",
+  "Hooked up with someone on a sports team",
+  "Hooked up with a commie and was disappointed",
+  "Hooked up with an eng kids and was freaked out",
+  "Have only worn formal clothings for interviews and not events",
+  "Cheated on your significant other",
+  "Got cheated on",
+  "Watched queen’s band perform",
+  "Been to the farmer’s market",
+  "Said you were from Toronto but really from GTA",
+  "Had to spent $100+ on course material",
+  "Have friends from SLC / RMC",
+  "Dated someone not your race",
+  "WARLOCK",
+  "Wuck festern?"
+];
 
 function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
@@ -133,7 +132,6 @@ function MainTest() {
   const screens = useBreakpoint();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  // Preserve original container background for document/body
   const containerBackground = theme === 'light' ? '#f0f2f5' : '#121212';
   useEffect(() => {
     document.documentElement.style.backgroundColor = containerBackground;
@@ -188,20 +186,37 @@ function MainTest() {
     const score = answers.filter((answer) => answer).length;
     const ageNumber = parseInt(age, 10);
     const validAge = !isNaN(ageNumber) ? ageNumber : null;
+    
+    // Compute additional fields
+    const completedWizard = answers[0];
+    const partyAnimal = answers[15] || answers[17] || answers[18] || answers[19] || answers[75];
+    const academicRebel = answers[20] || answers[21] || answers[22] || answers[74];
+    const campusRomance = answers[27] || answers[61] || answers[29];
+    const socialEventsCount = [11, 45, 57].reduce((acc, idx) => acc + (answers[idx] ? 1 : 0), 0);
+    const wildMisadventureCount = [5, 33, 79].reduce((acc, idx) => acc + (answers[idx] ? 1 : 0), 0);
+
     await addDoc(collection(db, 'mainTestResults'), {
       score,
       age: validAge,
+      completedWizard,
+      partyAnimal,
+      academicRebel,
+      campusRomance,
+      socialEventsCount,
+      wildMisadventureCount,
       timestamp: serverTimestamp(),
     });
     navigate('/results');
   };
 
   const handleViewStats = () => navigate('/results');
+
+  // Updated handleShare: show notification with "lionk copied"
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
       notification.success({
-        message: 'Link Copied!',
+        message: 'Link Copied',
         description: 'The link to this page has been copied to your clipboard.',
       });
     } catch (err) {
@@ -219,7 +234,6 @@ function MainTest() {
     document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
   }, [mobileMenuOpen]);
 
-  // New background image layer behind all content
   const backgroundImageLayerStyle = {
     position: 'fixed',
     top: 0,
@@ -229,18 +243,17 @@ function MainTest() {
     background: 'url("/images/background.png") repeat',
     backgroundSize: '1500px',
     zIndex: 0,
-    };
-    
-    // Semi-transparent overlay to fade the background image
-    const backgroundOverlayStyle = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        zIndex: 1,
-    };
+  };
+
+  const backgroundOverlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: theme === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1,
+  };
 
   const containerStyle = {
     background: containerBackground,
@@ -318,10 +331,9 @@ function MainTest() {
     cursor: 'pointer',
     transition: 'color 0.3s ease, border-color 0.3s ease',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   };
 
-  // Define mobileMenuButtonStyle BEFORE using it
   const mobileMenuButtonStyle = {
     width: '200px',
     height: '50px',
@@ -442,10 +454,8 @@ function MainTest() {
 
   return (
     <div style={containerStyle}>
-      {/* Background image layer */}
       <div style={backgroundImageLayerStyle} />
       <div style={backgroundOverlayStyle} />
-      {/* Absolutely positioned emoji layer */}
       <div style={emojiLayerStyle}>
         {emojiArray.map(({ id, emoji, topPos, leftPos, dx, dy, size, duration }) => {
           const styleSpan = {
@@ -465,8 +475,6 @@ function MainTest() {
           );
         })}
       </div>
-
-      {/* Global CSS overrides */}
       <style>{`
         @keyframes float {
           0% {
@@ -506,11 +514,7 @@ function MainTest() {
           padding-top: env(safe-area-inset-top, 0) !important;
         }
       `}</style>
-
-      {/* Mobile Floating Menu Button */}
       <Button icon={<MenuOutlined />} style={mobileButtonStyle} onClick={openMobileMenu} />
-
-      {/* Mobile Menu Overlay */}
       <div style={mobileMenuOverlayStyle}>
         <button onClick={closeMobileMenu} style={mobileExitButtonStyle}>
           <CloseOutlined />
@@ -526,8 +530,6 @@ function MainTest() {
         </Button>
         {darkModeButtonMobile}
       </div>
-
-      {/* Desktop Fixed Menu Bar */}
       <div style={dockOverlayStyle}>
         <Button icon={<BarChartOutlined />} style={dockButtonStyle} onClick={handleViewStats}>
           Stats
@@ -540,10 +542,7 @@ function MainTest() {
         </Button>
         {darkModeButtonDesktop}
       </div>
-
-      {/* Main Content */}
       <div style={contentStyle}>
-        {/* Logo */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem' }}>
           <img
             src="/images/logo.png"
@@ -551,20 +550,15 @@ function MainTest() {
             style={{ maxWidth: '130%', height: 'auto' }}
           />
         </div>
-
         <p style={paragraphStyle}>
-            The Queen's Purity Test has historically served as a way for students to bond and track their experiences throughout their time at the Queen's University. It's a voluntary opportunity for students to reflect on their unique university journey.
+          The Queen's Purity Test has historically served as a way for students to bond and track their experiences throughout their time at the Queen's University. It's a voluntary opportunity for students to reflect on their unique university journey.
         </p>
-
         <p style={cautionStyle}>
-            Caution: This is not a bucket list. Completion of all items will not result in anything good.
+          Caution: This is not a bucket list. Completion of all items will not result in anything good.
         </p>
-
         <p style={paragraphStyle}>
-            Click on every item you have done. Your purity score will be calculated at the end.
+          Click on every item you have done. Your purity score will be calculated at the end.
         </p>
-
-        {/* Age Input */}
         <div style={ageContainerStyle}>
           <p style={{ marginBottom: '5px' }}>Your Age (Optional):</p>
           <Input
@@ -575,8 +569,6 @@ function MainTest() {
             style={{ width: '150px' }}
           />
         </div>
-
-        {/* Questions */}
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
           {questions.map((question, index) => (
             <li key={index} style={listItemStyle}>
@@ -591,8 +583,6 @@ function MainTest() {
             </li>
           ))}
         </ul>
-
-        {/* Button row placed after questions */}
         <div style={buttonRowStyle}>
           <button style={finishButtonStyle} onClick={handleSubmit}>
             Finish Test

@@ -1,10 +1,9 @@
-// src/components/ResultsPage.js
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
 import { query, collection, orderBy, onSnapshot } from 'firebase/firestore';
-import { Statistic, Typography, Button, notification } from 'antd';
-import { LeftOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { Statistic, Typography, Button, notification, Tooltip } from 'antd';
+import { LeftOutlined, ShareAltOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { ThemeContext } from '../ThemeContext';
 import { useIsMobile } from '../hooks/useIsMobile';
 
@@ -16,8 +15,10 @@ import {
   Pie as RePie,
   XAxis,
   YAxis,
-  Tooltip,
+  Tooltip as ReTooltip,
   ResponsiveContainer,
+  LineChart as ReLineChart,
+  Line as ReLine,
 } from 'recharts';
 
 const { Title, Text } = Typography;
@@ -37,6 +38,11 @@ function ResultsPage() {
   const { theme } = useContext(ThemeContext);
   const [data, setData] = useState([]);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Detect if on mobile (below 768px)
   const isMobile = useIsMobile(768);
 
@@ -46,14 +52,14 @@ function ResultsPage() {
       containerBg: '#f0f2f5',
       cardBg: '#fff',
       textColor: '#000',
-      accentColor: '#1890ff',
+      accentColor: '#18325c',
       buttonBg: 'rgba(255, 255, 255, 0.8)',
     },
     dark: {
       containerBg: '#121212',
       cardBg: '#1E1E1E',
       textColor: '#E0E0E0',
-      accentColor: '#FFC107',
+      accentColor: '#eabe3c',
       buttonBg: 'rgba(0, 0, 0, 0.8)',
     },
   };
@@ -73,6 +79,12 @@ function ResultsPage() {
   // Compute statistics
   let stats = null;
   let additionalStats = {};
+  let completionRate = 0,
+    partyAnimalRate = 0,
+    academicRebellionRatio = 0,
+    campusRomanceRate = 0,
+    socialButterflyScore = 0,
+    wildMisadventureAvg = 0;
   if (data.length > 0) {
     const scores = data.map((d) => d.score);
     const validAges = data
@@ -116,6 +128,14 @@ function ResultsPage() {
       lowestScore,
       ageRange,
     };
+
+    const total = data.length;
+    completionRate = (data.filter((d) => d.completedWizard).length / total) * 100;
+    partyAnimalRate = (data.filter((d) => d.partyAnimal).length / total) * 100;
+    academicRebellionRatio = (data.filter((d) => d.academicRebel).length / total) * 100;
+    campusRomanceRate = (data.filter((d) => d.campusRomance).length / total) * 100;
+    socialButterflyScore = data.reduce((sum, d) => sum + (d.socialEventsCount || 0), 0) / total;
+    wildMisadventureAvg = data.reduce((sum, d) => sum + (d.wildMisadventureCount || 0), 0) / total;
   }
 
   // Prepare chart data for Recharts
@@ -128,12 +148,22 @@ function ResultsPage() {
     count: scoreCounts[score],
   }));
 
-  // --- LAYOUT STYLES ---
+  // New chart data for aggregated rates and social/wild averages
+  const aggregatedRatesData = [
+    { name: 'Completion', rate: Number(completionRate.toFixed(2)) },
+    { name: 'Party Animal', rate: Number(partyAnimalRate.toFixed(2)) },
+    { name: 'Academic Rebel', rate: Number(academicRebellionRatio.toFixed(2)) },
+    { name: 'Campus Romance', rate: Number(campusRomanceRate.toFixed(2)) },
+  ];
 
-  // On desktop, use a slightly larger size for each column.
+  const socialWildData = [
+    { name: 'Social Butterfly', avg: Number(socialButterflyScore.toFixed(2)) },
+    { name: 'Wild Misadventure', avg: Number(wildMisadventureAvg.toFixed(2)) },
+  ];
+
+  // --- LAYOUT STYLES ---
   const blockSize = isMobile ? '200px' : '180px';
 
-  // Outer container with extra top & bottom spacing
   const containerStyle = {
     backgroundColor: containerBg,
     minHeight: '100vh',
@@ -149,7 +179,6 @@ function ResultsPage() {
     fontFamily: 'Times New Roman, serif',
   };
 
-  // Main content area
   const contentStyle = {
     width: '100%',
     maxWidth: isMobile ? '400px' : '800px',
@@ -158,7 +187,6 @@ function ResultsPage() {
     fontFamily: 'Times New Roman, serif',
   };
 
-  // 2 columns on mobile, 4 on desktop. Each column is `blockSize` wide.
   const gridContainerStyle = {
     display: 'grid',
     gridTemplateColumns: `repeat(${isMobile ? 2 : 4}, ${blockSize})`,
@@ -167,8 +195,6 @@ function ResultsPage() {
     fontFamily: 'Times New Roman, serif',
   };
 
-  // We remove `width: blockSize` so the item width is controlled by the grid.
-  // We keep `height: blockSize` so each block is the same height.
   const squareBlockStyle = {
     backgroundColor: cardBg,
     borderRadius: '8px',
@@ -181,19 +207,16 @@ function ResultsPage() {
     padding: '0.5rem',
   };
 
-  // Bar chart block should span 2 columns.
   const barBlockStyle = {
     ...squareBlockStyle,
     gridColumn: 'span 2',
   };
 
-  // For charts, fill the entire block minus a little space for the title.
   const chartContainerStyle = {
     width: '100%',
     height: `calc(${blockSize} - 1.2rem)`,
   };
 
-  // Titles & text
   const blockTitleStyle = {
     marginBottom: '4px',
     color: textColor,
@@ -212,25 +235,32 @@ function ResultsPage() {
     fontFamily: 'Times New Roman, serif',
   };
 
-  function StatBlock({ title, value }) {
+  // Updated StatBlock with a tooltip question icon
+  function StatBlock({ title, value, info }) {
     return (
       <div style={squareBlockStyle}>
-        <Title level={5} style={blockTitleStyle}>
-          {title}
-        </Title>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Title level={5} style={blockTitleStyle}>
+            {title}
+          </Title>
+          {info && (
+            <Tooltip title={info}>
+              <InfoCircleOutlined style={{ marginLeft: '0.5rem', cursor: 'pointer', color: accentColor }} />
+            </Tooltip>
+          )}
+        </div>
         <Statistic
           value={value}
           valueStyle={{
             color: accentColor,
             fontSize: '2rem',
-            fontWeight: 'bold',
+            fontWeight: '400',
           }}
         />
       </div>
     );
   }
 
-  // Optionally scale content on mobile
   const scaleStyle = isMobile
     ? {
         transform: 'scale(0.95)',
@@ -238,7 +268,6 @@ function ResultsPage() {
       }
     : {};
 
-  // Matte transparent style for floating buttons
   const floatingButtonStyle = {
     position: 'fixed',
     zIndex: 1000,
@@ -252,7 +281,6 @@ function ResultsPage() {
     backdropFilter: 'blur(4px)',
   };
 
-  // Share functionality
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -270,7 +298,6 @@ function ResultsPage() {
 
   return (
     <div style={containerStyle}>
-      {/* Floating buttons */}
       <Button
         icon={<LeftOutlined />}
         onClick={() => navigate(-1)}
@@ -289,8 +316,6 @@ function ResultsPage() {
           right: 15,
         }}
       />
-
-      {/* Main content (with scaling if needed) */}
       <div style={{ ...contentStyle, ...scaleStyle }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <Title level={3} style={headerTitleStyle}>
@@ -300,29 +325,33 @@ function ResultsPage() {
             A snapshot of how Queen’s students are faring on the Purity Test.
           </Text>
         </div>
-
         <div style={gridContainerStyle}>
-          {/* 1: Total Submissions */}
-          <StatBlock
-            title="📊 Total Submissions"
-            value={stats ? stats.total : 0}
+          {/* Existing Stat Blocks with detailed info tooltips */}
+          <StatBlock 
+            title="📊 Total Submissions" 
+            value={stats ? stats.total : 0} 
+            info="Total count of responses submitted." 
           />
-          {/* 2: Avg Score */}
-          <StatBlock
-            title="⭐ Avg Score"
-            value={stats ? stats.avgScore : 0}
+          <StatBlock 
+            title="⭐ Avg Score" 
+            value={stats ? stats.avgScore : 0} 
+            info="Average score calculated as the sum of all scores divided by the number of responses." 
           />
-          {/* 3: Bar Chart (spans 2 columns) */}
           <div style={barBlockStyle}>
-            <Title level={5} style={blockTitleStyle}>
-              📈 Score Distribution
-            </Title>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Title level={5} style={blockTitleStyle}>
+                📈 Score Distribution
+              </Title>
+              <Tooltip title="Number of responses that achieved each score.">
+                <InfoCircleOutlined style={{ marginLeft: '0.5rem', cursor: 'pointer', color: accentColor }} />
+              </Tooltip>
+            </div>
             <div style={chartContainerStyle}>
               <ResponsiveContainer width="100%" height="100%">
                 <ReBarChart data={scoreDistData}>
                   <XAxis dataKey="score" stroke={textColor} />
                   <YAxis stroke={textColor} />
-                  <Tooltip
+                  <ReTooltip
                     contentStyle={{ backgroundColor: cardBg }}
                     labelStyle={{ color: textColor }}
                     itemStyle={{ color: textColor }}
@@ -332,20 +361,24 @@ function ResultsPage() {
               </ResponsiveContainer>
             </div>
           </div>
-          {/* 4: Median Score */}
-          <StatBlock
-            title="⚖️ Median Score"
-            value={stats ? stats.medianScore : 0}
+          <StatBlock 
+            title="⚖️ Median Score" 
+            value={stats ? stats.medianScore : 0} 
+            info="Middle value of the sorted scores list." 
           />
-          {/* 5: Pie Chart */}
           <div style={squareBlockStyle}>
-            <Title level={5} style={blockTitleStyle}>
-              🍰 Score in a Pie
-            </Title>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Title level={5} style={blockTitleStyle}>
+                🍰 Score in a Pie
+              </Title>
+              <Tooltip title="Pie chart showing the percentage breakdown of scores.">
+                <InfoCircleOutlined style={{ marginLeft: '0.5rem', cursor: 'pointer', color: accentColor }} />
+              </Tooltip>
+            </div>
             <div style={chartContainerStyle}>
               <ResponsiveContainer width="100%" height="100%">
                 <RePieChart>
-                  <Tooltip
+                  <ReTooltip
                     contentStyle={{ backgroundColor: cardBg }}
                     labelStyle={{ color: textColor }}
                     itemStyle={{ color: textColor }}
@@ -362,26 +395,110 @@ function ResultsPage() {
               </ResponsiveContainer>
             </div>
           </div>
-          {/* 6: Highest Score */}
-          <StatBlock
-            title="🏆 Highest Score"
-            value={additionalStats.highestScore || 0}
+          <StatBlock 
+            title="🏆 Highest Score" 
+            value={additionalStats.highestScore || 0} 
+            info="Maximum score achieved among all responses." 
           />
-          {/* 7: Lowest Score */}
-          <StatBlock
-            title="😢 Lowest Score"
-            value={additionalStats.lowestScore || 0}
+          <StatBlock 
+            title="😢 Lowest Score" 
+            value={additionalStats.lowestScore || 0} 
+            info="Minimum score achieved among all responses." 
           />
-          {/* 8: Mode Score */}
-          <StatBlock
-            title="🔥 Mode Score"
-            value={additionalStats.modeScore || 0}
+          <StatBlock 
+            title="🔥 Mode Score" 
+            value={additionalStats.modeScore || 0} 
+            info="Most frequently occurring score." 
           />
-          {/* 9: Age Range */}
-          <StatBlock
-            title="📊 Age Range"
-            value={additionalStats.ageRange || 'N/A'}
+          <StatBlock 
+            title="📊 Age Range" 
+            value={additionalStats.ageRange || 'N/A'} 
+            info="Difference between the youngest and oldest respondent ages." 
           />
+
+          {/* New Stat Blocks for extra metrics with detailed calculation info */}
+          <StatBlock 
+            title="📈 Completion Rate" 
+            value={data.length ? `${completionRate.toFixed(2)}%` : '0%'} 
+            info="Calculated as the percentage of responses where 'Completed wizard' was checked." 
+          />
+          <StatBlock 
+            title="🎉 Party Animal" 
+            value={data.length ? `${partyAnimalRate.toFixed(2)}%` : '0%'} 
+            info="Percentage of responses with wild party behaviors (e.g., playing beer bong, shotgunning a beer)." 
+          />
+          <StatBlock 
+            title="🚀 Academic Rebel" 
+            value={data.length ? `${academicRebellionRatio.toFixed(2)}%` : '0%'} 
+            info="Percentage of responses indicating academic risk-taking (e.g., doing an exam while impaired or faking illness)." 
+          />
+          <StatBlock 
+            title="💘 Campus Romance" 
+            value={data.length ? `${campusRomanceRate.toFixed(2)}%` : '0%'} 
+            info="Percentage of responses with on-campus romantic encounters (e.g., sex in a residence or getting walked in on)." 
+          />
+          <StatBlock 
+            title="🦋 Social Butterfly" 
+            value={data.length ? socialButterflyScore.toFixed(2) : '0'} 
+            info="Average number of social events per respondent (includes networking events, club leadership, and LinkedIn stalking)." 
+          />
+          <StatBlock 
+            title="😜 Wild Misadventure" 
+            value={data.length ? wildMisadventureAvg.toFixed(2) : '0'} 
+            info="Average count of extreme actions per respondent (e.g., pulling a fire alarm, jumping the pier, throwing up in a library)." 
+          />
+
+          {/* New Chart Block: Aggregated Rates using a Bar Chart */}
+          <div style={barBlockStyle}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Title level={5} style={blockTitleStyle}>
+                📊 Aggregated Rates
+              </Title>
+              <Tooltip title="Bar chart showing the aggregated percentages for completion, party, academic, and romance metrics.">
+                <InfoCircleOutlined style={{ marginLeft: '0.5rem', cursor: 'pointer', color: accentColor }} />
+              </Tooltip>
+            </div>
+            <div style={chartContainerStyle}>
+              <ResponsiveContainer width="100%" height="100%">
+                <ReBarChart data={aggregatedRatesData}>
+                  <XAxis dataKey="name" stroke={textColor} />
+                  <YAxis stroke={textColor} />
+                  <ReTooltip
+                    contentStyle={{ backgroundColor: cardBg }}
+                    labelStyle={{ color: textColor }}
+                    itemStyle={{ color: textColor }}
+                  />
+                  <ReBar dataKey="rate" fill={accentColor} />
+                </ReBarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* New Chart Block: Social & Wild Averages using a Line Chart */}
+          <div style={barBlockStyle}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Title level={5} style={blockTitleStyle}>
+                📈 Social & Wild Averages
+              </Title>
+              <Tooltip title="Line chart of the average number of social events and extreme actions reported per respondent.">
+                <InfoCircleOutlined style={{ marginLeft: '0.5rem', cursor: 'pointer', color: accentColor }} />
+              </Tooltip>
+            </div>
+            <div style={chartContainerStyle}>
+              <ResponsiveContainer width="100%" height="100%">
+                <ReLineChart data={socialWildData}>
+                  <XAxis dataKey="name" stroke={textColor} />
+                  <YAxis stroke={textColor} />
+                  <ReTooltip
+                    contentStyle={{ backgroundColor: cardBg }}
+                    labelStyle={{ color: textColor }}
+                    itemStyle={{ color: textColor }}
+                  />
+                  <ReLine type="monotone" dataKey="avg" stroke={accentColor} />
+                </ReLineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       </div>
     </div>
