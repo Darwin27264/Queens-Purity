@@ -262,7 +262,6 @@ function MainTest() {
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 0,
     overflow: 'hidden',
     pointerEvents: 'none',
     zIndex: 2,
