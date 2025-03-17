@@ -146,7 +146,7 @@ function ResultsPage() {
     alignItems: 'flex-start',
     padding: '2rem 0.5rem',
     boxSizing: 'border-box',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
 
   // Main content area
@@ -155,7 +155,7 @@ function ResultsPage() {
     maxWidth: isMobile ? '400px' : '800px',
     position: 'relative',
     padding: '0 1rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
 
   // 2 columns on mobile, 4 on desktop. Each column is `blockSize` wide.
@@ -164,7 +164,7 @@ function ResultsPage() {
     gridTemplateColumns: `repeat(${isMobile ? 2 : 4}, ${blockSize})`,
     justifyContent: 'center',
     gap: '0.55rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
 
   // We remove `width: blockSize` so the item width is controlled by the grid.
@@ -198,18 +198,18 @@ function ResultsPage() {
     marginBottom: '4px',
     color: textColor,
     fontSize: '1rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
   const headerTitleStyle = {
     margin: 10,
     color: textColor,
     fontSize: '1.4rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
   const headerTextStyle = {
     color: textColor,
     fontSize: '1rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
   };
 
   function StatBlock({ title, value }) {

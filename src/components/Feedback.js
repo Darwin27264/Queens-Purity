@@ -42,7 +42,7 @@ function Feedback() {
     color: theme === 'light' ? '#000' : '#fff',
     fontWeight: '100',
     fontSize: '1.1rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
     padding: '4px 8px',
     cursor: 'pointer',
     transition: 'color 0.3s ease, border-color 0.3s ease',
@@ -58,7 +58,7 @@ function Feedback() {
     color: theme === 'light' ? '#000' : '#fff',
     fontWeight: '100',
     fontSize: '1.1rem',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
     padding: '4px 8px',
     cursor: 'pointer',
     transition: 'color 0.3s ease, border-color 0.3s ease',
@@ -84,7 +84,7 @@ function Feedback() {
     color: theme === 'light' ? '#000' : '#fff',
     padding: '20px',
     borderRadius: '8px',
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Times New Roman, serif',
     textAlign: 'center',
   };
 
@@ -93,7 +93,7 @@ function Feedback() {
       padding: '40px',
       maxWidth: '800px',
       margin: '40px auto',
-      fontFamily: 'Georgia, serif',
+      fontFamily: 'Times New Roman, serif',
       color: theme === 'light' ? '#000' : '#fff',
       backgroundColor: theme === 'light' ? '#fff' : '#333',
       borderRadius: '8px',
@@ -104,16 +104,16 @@ function Feedback() {
         onClick={() => navigate(-1)} 
         style={floatingBackButtonStyle}
       />
-      <h1 style={{ fontFamily: 'Georgia, serif' }}>Feedback</h1>
-      <p style={{ fontFamily: 'Georgia, serif' }}>
+      <h1 style={{ fontFamily: 'Times New Roman, serif' }}>Feedback</h1>
+      <p style={{ fontFamily: 'Times New Roman, serif' }}>
         If you have any improvement ideas or feedback, please let us know by submitting your feedback below.
       </p>
-      <Form form={form} layout="vertical" style={{ fontFamily: 'Georgia, serif' }}>
+      <Form form={form} layout="vertical" style={{ fontFamily: 'Times New Roman, serif' }}>
         <Form.Item
           label="Your Feedback"
           name="feedback"
           rules={[{ required: true, message: 'Please enter your feedback' }]}
-          style={{ fontFamily: 'Georgia, serif' }}
+          style={{ fontFamily: 'Times New Roman, serif' }}
         >
           <Input.TextArea rows={6} placeholder="Enter your feedback here..." />
         </Form.Item>
