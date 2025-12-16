@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { db } from '../firebase';
 import { query, collection, orderBy, onSnapshot } from 'firebase/firestore';
 import { Statistic, Typography, Button, notification, Tooltip } from 'antd';
@@ -35,13 +35,22 @@ const median = (arr) => {
 
 function ResultsPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { theme } = useContext(ThemeContext);
   const [data, setData] = useState([]);
+  const userScore = searchParams.get('score');
 
-  // Scroll to top on mount
+  // Additional scroll to top when score is present (ensures it works even if ScrollToTop runs too early)
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (userScore) {
+      // Use requestAnimationFrame to ensure DOM is fully rendered
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    }
+  }, [userScore]);
 
   // Detect if on mobile (below 768px)
   const isMobile = useIsMobile(768);
@@ -67,13 +76,29 @@ function ResultsPage() {
 
   // Fetch Firestore data
   useEffect(() => {
-    const q = query(collection(db, 'mainTestResults'), orderBy('timestamp', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const results = [];
-      snapshot.forEach((doc) => results.push(doc.data()));
-      setData(results);
-    });
-    return () => unsubscribe();
+    if (!db) {
+      console.warn('Firebase not initialized');
+      return;
+    }
+    
+    try {
+      const q = query(collection(db, 'mainTestResults'), orderBy('timestamp', 'desc'));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const results = [];
+          snapshot.forEach((doc) => results.push(doc.data()));
+          setData(results);
+        },
+        (error) => {
+          console.error('Error fetching results:', error);
+          // App continues to work even if Firebase fails
+        }
+      );
+      return () => unsubscribe();
+    } catch (error) {
+      console.error('Error setting up Firestore query:', error);
+    }
   }, []);
 
   // Compute statistics
@@ -319,12 +344,41 @@ function ResultsPage() {
       <div style={{ ...contentStyle, ...scaleStyle }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <Title level={3} style={headerTitleStyle}>
-            Queen’s Purity Test Results
+            Queen's Purity Test Results
           </Title>
           <Text style={headerTextStyle}>
-            A snapshot of how Queen’s students are faring on the Purity Test.
+            A snapshot of how Queen's students are faring on the Purity Test.
           </Text>
         </div>
+        {userScore && (
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '2.5rem',
+            padding: '2rem',
+            backgroundColor: cardBg,
+            borderRadius: '12px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+          }}>
+            <Text style={{
+              fontSize: '1.2rem',
+              color: textColor,
+              fontFamily: 'Times New Roman, serif',
+              display: 'block',
+              marginBottom: '1rem',
+            }}>
+              Your Score
+            </Text>
+            <Statistic
+              value={userScore}
+              valueStyle={{
+                color: accentColor,
+                fontSize: '4.5rem',
+                fontWeight: 'bold',
+                fontFamily: 'Times New Roman, serif',
+              }}
+            />
+          </div>
+        )}
         <div style={gridContainerStyle}>
           {/* Existing Stat Blocks with detailed info tooltips */}
           <StatBlock 

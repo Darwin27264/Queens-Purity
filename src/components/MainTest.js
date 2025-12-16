@@ -13,6 +13,8 @@ import {
   SunOutlined,
 } from '@ant-design/icons';
 import { ThemeContext } from '../ThemeContext';
+import { validateAge } from '../utils/validation';
+import { checkRateLimit, recordAttempt, getRateLimitMessage } from '../utils/rateLimiter';
 
 const { useBreakpoint } = Grid;
 
@@ -142,6 +144,7 @@ function MainTest() {
   const [age, setAge] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [emojiArray, setEmojiArray] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const spawnIntervalRef = useRef(null);
 
   function spawnEmoji() {
@@ -182,10 +185,36 @@ function MainTest() {
     setAnswers(Array(questions.length).fill(false));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
+    // Prevent double submission
+    if (isSubmitting) return;
+
+    // Check rate limit
+    const rateLimitCheck = checkRateLimit('testSubmission');
+    if (!rateLimitCheck.isAllowed) {
+      notification.error({
+        message: 'Rate Limit Exceeded',
+        description: getRateLimitMessage(rateLimitCheck),
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
     const score = answers.filter((answer) => answer).length;
-    const ageNumber = parseInt(age, 10);
-    const validAge = !isNaN(ageNumber) ? ageNumber : null;
+    
+    // Validate age using validation utility
+    const ageValidation = validateAge(age);
+    const validAge = ageValidation.isValid ? ageValidation.age : null;
+    
+    if (!ageValidation.isValid && age.trim() !== '') {
+      notification.warning({
+        message: 'Invalid Age',
+        description: ageValidation.error || 'Age validation failed',
+      });
+      setIsSubmitting(false);
+      return;
+    }
     
     // Compute additional fields
     const completedWizard = answers[0];
@@ -195,7 +224,11 @@ function MainTest() {
     const socialEventsCount = [11, 45, 57].reduce((acc, idx) => acc + (answers[idx] ? 1 : 0), 0);
     const wildMisadventureCount = [5, 33, 79].reduce((acc, idx) => acc + (answers[idx] ? 1 : 0), 0);
 
-    await addDoc(collection(db, 'mainTestResults'), {
+    // Navigate immediately - don't wait for Firebase
+    navigate(`/results?score=${score}`);
+
+    // Try to save to Firebase in the background (fire and forget)
+    const firebasePromise = addDoc(collection(db, 'mainTestResults'), {
       score,
       age: validAge,
       completedWizard,
@@ -206,7 +239,20 @@ function MainTest() {
       wildMisadventureCount,
       timestamp: serverTimestamp(),
     });
-    navigate('/results');
+
+    recordAttempt('testSubmission');
+
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Firebase timeout')), 2000)
+    );
+
+    Promise.race([firebasePromise, timeoutPromise])
+      .catch((error) => {
+        // Silently fail - we've already navigated
+        // Error is non-blocking, user can still see results
+        console.error('Error saving to Firebase (non-blocking):', error);
+      });
   };
 
   const handleViewStats = () => navigate('/results');
@@ -428,7 +474,7 @@ function MainTest() {
   };
 
   const listItemStyle = {
-    margin: '8px 0',
+    margin: '14px 0',
   };
 
   const finishButtonStyle = {
@@ -546,8 +592,8 @@ function MainTest() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '2rem' }}>
           <img
             src="/images/logo.png"
-            alt="Queen’s Purity Test Logo"
-            style={{ maxWidth: '130%', height: 'auto' }}
+            alt="Queen's Purity Test Logo"
+            style={{ maxWidth: '90%', height: 'auto' }}
           />
         </div>
         <p style={paragraphStyle}>
@@ -567,6 +613,8 @@ function MainTest() {
             value={age}
             onChange={(e) => setAge(e.target.value)}
             style={{ width: '150px' }}
+            min={13}
+            max={120}
           />
         </div>
         <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
@@ -584,8 +632,12 @@ function MainTest() {
           ))}
         </ul>
         <div style={buttonRowStyle}>
-          <button style={finishButtonStyle} onClick={handleSubmit}>
-            Finish Test
+          <button 
+            style={finishButtonStyle} 
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting...' : 'Finish Test'}
           </button>
           <Popconfirm
             title="Are you sure you want to clear all boxes?"

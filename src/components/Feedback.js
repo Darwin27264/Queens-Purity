@@ -1,35 +1,67 @@
 import React, { useState } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
 import { MailOutlined, LeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from '../ThemeContext';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, serverTimestamp } from '../firebase';
+import { validateFeedback } from '../utils/validation';
+import { checkRateLimit, recordAttempt, getRateLimitMessage } from '../utils/rateLimiter';
 
 function Feedback() {
   const navigate = useNavigate();
   const { theme } = React.useContext(ThemeContext);
   const [form] = Form.useForm();
   const [showPopup, setShowPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedbackLength, setFeedbackLength] = useState(0);
 
   const handleSubmit = async () => {
-    const values = form.getFieldsValue();
-    if (!values.feedback || values.feedback.trim() === "") {
-      alert("Please enter your feedback.");
+    if (isSubmitting) return;
+
+    // Check rate limit
+    const rateLimitCheck = checkRateLimit('feedbackSubmission');
+    if (!rateLimitCheck.isAllowed) {
+      notification.error({
+        message: 'Rate Limit Exceeded',
+        description: getRateLimitMessage(rateLimitCheck),
+      });
       return;
     }
+
+    const values = form.getFieldsValue();
+    
+    // Validate feedback
+    const feedbackValidation = validateFeedback(values.feedback);
+    if (!feedbackValidation.isValid) {
+      notification.error({
+        message: 'Validation Error',
+        description: feedbackValidation.error,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
     try {
       await addDoc(collection(db, 'feedback'), {
-        feedback: values.feedback,
+        feedback: feedbackValidation.sanitized,
         timestamp: serverTimestamp(),
       });
+      recordAttempt('feedbackSubmission');
       setShowPopup(true);
+      setFeedbackLength(0);
       setTimeout(() => {
         form.resetFields();
       }, 500);
     } catch (error) {
-      console.error(error);
-      alert("There was an error submitting your feedback. Please try again later.");
+      console.error('Error submitting feedback:', error);
+      notification.error({
+        message: 'Error',
+        description: 'Unable to submit feedback. Please check your connection and try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -114,7 +146,13 @@ function Feedback() {
           rules={[{ required: true, message: 'Please enter your feedback' }]}
           style={{ fontFamily: 'Times New Roman, serif' }}
         >
-          <Input.TextArea rows={6} placeholder="Feedback here..." />
+          <Input.TextArea 
+            rows={6} 
+            placeholder="Feedback here..." 
+            maxLength={5000}
+            showCount
+            onChange={(e) => setFeedbackLength(e.target.value.length)}
+          />
         </Form.Item>
         <Form.Item>
           <Button 
@@ -122,8 +160,9 @@ function Feedback() {
             icon={<MailOutlined />} 
             onClick={handleSubmit}
             style={buttonStyle}
+            disabled={isSubmitting}
           >
-            Send
+            {isSubmitting ? 'Sending...' : 'Send'}
           </Button>
         </Form.Item>
       </Form>

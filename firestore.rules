@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if request has required fields
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // Helper function to check if data hasn't been modified (for updates)
+    function isUnmodified(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+    
+    // Main test results - read for stats, write only for new submissions
+    match /mainTestResults/{document=**} {
+      // Allow read access for stats page (public)
+      allow read: if true;
+      
+      // Allow create only with required fields and valid data types
+      allow create: if 
+        hasRequiredFields(['score', 'timestamp']) &&
+        request.resource.data.score is int &&
+        request.resource.data.score >= 0 &&
+        request.resource.data.timestamp is timestamp &&
+        (!('age' in request.resource.data) || 
+         (request.resource.data.age is int && 
+          request.resource.data.age >= 13 && 
+          request.resource.data.age <= 120));
+      
+      // Prevent updates and deletes
+      allow update, delete: if false;
+    }
+    
+    // Custom tests - read if not expired, write for creation only
+    match /customTests/{testId} {
+      // Allow read if test exists and hasn't expired
+      allow read: if resource != null && 
+        resource.data.expiresAt is timestamp &&
+        resource.data.expiresAt > request.time;
+      
+      // Allow create with required fields and validation
+      allow create: if 
+        hasRequiredFields(['title', 'questions', 'createdAt', 'expiresAt']) &&
+        request.resource.data.title is string &&
+        request.resource.data.title.size() > 0 &&
+        request.resource.data.title.size() <= 200 &&
+        request.resource.data.questions is list &&
+        request.resource.data.questions.size() > 0 &&
+        request.resource.data.questions.size() <= 100 &&
+        request.resource.data.createdAt is timestamp &&
+        request.resource.data.expiresAt is timestamp &&
+        request.resource.data.expiresAt > request.time;
+      
+      // Prevent updates and deletes
+      allow update, delete: if false;
+    }
+    
+    // Custom test results - read for stats, write only for new submissions
+    match /customTestResults/{document=**} {
+      // Allow read access (for displaying results)
+      allow read: if true;
+      
+      // Allow create only with required fields
+      allow create: if 
+        hasRequiredFields(['testId', 'score', 'timestamp']) &&
+        request.resource.data.testId is string &&
+        request.resource.data.testId.size() > 0 &&
+        request.resource.data.testId.size() <= 50 &&
+        request.resource.data.score is int &&
+        request.resource.data.score >= 0 &&
+        request.resource.data.timestamp is timestamp;
+      
+      // Prevent updates and deletes
+      allow update, delete: if false;
+    }
+    
+    // Feedback - write only, no read (privacy)
+    match /feedback/{document=**} {
+      // No read access for privacy
+      allow read: if false;
+      
+      // Allow create with validation
+      allow create: if 
+        hasRequiredFields(['feedback', 'timestamp']) &&
+        request.resource.data.feedback is string &&
+        request.resource.data.feedback.size() > 0 &&
+        request.resource.data.feedback.size() <= 5000 &&
+        request.resource.data.timestamp is timestamp;
+      
+      // Prevent updates and deletes
+      allow update, delete: if false;
+    }
+    
+    // Deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

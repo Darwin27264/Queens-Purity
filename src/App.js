@@ -6,23 +6,28 @@ import ResultsPage from './components/ResultsPage';
 import CreateTest from './components/CreateTest';
 import CustomTest from './components/CustomTest';
 import CustomResults from './components/CustomResults';
-import Feedback from './components/Feedback';  // New Feedback page import
+import Feedback from './components/Feedback';
+import ErrorBoundary from './components/ErrorBoundary';
+import ScrollToTop from './components/ScrollToTop';
 import { ThemeProvider } from './ThemeContext';
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainTest />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/create" element={<CreateTest />} />
-          <Route path="/custom/:testId" element={<CustomTest />} />
-          <Route path="/custom/:testId/results" element={<CustomResults />} />
-          <Route path="/feedback" element={<Feedback />} />  {/* New route */}
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<MainTest />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/create" element={<CreateTest />} />
+            <Route path="/custom/:testId" element={<CustomTest />} />
+            <Route path="/custom/:testId/results" element={<CustomResults />} />
+            <Route path="/feedback" element={<Feedback />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
