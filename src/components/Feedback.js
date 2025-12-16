@@ -14,7 +14,6 @@ function Feedback() {
   const [form] = Form.useForm();
   const [showPopup, setShowPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedbackLength, setFeedbackLength] = useState(0);
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
@@ -50,7 +49,6 @@ function Feedback() {
       });
       recordAttempt('feedbackSubmission');
       setShowPopup(true);
-      setFeedbackLength(0);
       setTimeout(() => {
         form.resetFields();
       }, 500);
@@ -151,7 +149,6 @@ function Feedback() {
             placeholder="Feedback here..." 
             maxLength={5000}
             showCount
-            onChange={(e) => setFeedbackLength(e.target.value.length)}
           />
         </Form.Item>
         <Form.Item>
